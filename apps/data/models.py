@@ -1,7 +1,5 @@
 from django.db import models
-
-from apps.users.models import User
-
+from django.contrib.auth.models import User
 
 class Supplier(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -29,7 +27,7 @@ class Vote(models.Model):
     value = models.SmallIntegerField()
 
     class Meta:
-        unique_together = ['user', 'product']
+        unique_together = ["user", "product"]
 
     def __str__(self):
         return f"{self.user}-{self.product}"
@@ -42,3 +40,22 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user}-{self.product}"
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    def __str__(self):
+        return f"{self.user}"
+
+
+class Order(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.SmallIntegerField(default=0)
+
+    class Meta:
+        unique_together = ["cart", "product"]
+
+    def __str__(self):
+        return f"{self.cart}-{self.product}"
