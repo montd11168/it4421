@@ -12,4 +12,5 @@ class SupplierViewSet(viewsets.ModelViewSet):
 
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
-    queryset = Product.objects.all()
+    def get_queryset(self):
+        return Product.objects.filter(supplier=self.kwargs['supplier_pk'])
