@@ -20,7 +20,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to="product", null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.supplier} {self.name}"
 
 
 class Vote(models.Model):
