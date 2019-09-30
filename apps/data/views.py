@@ -1,8 +1,7 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 
-from .models import Supplier, Product
-from .serializers import SupplierSerializer, ProductSerializer
+from .models import Product, Supplier
+from .serializers import ProductSerializer, SupplierSerializer
 
 
 class SupplierViewSet(viewsets.ModelViewSet):
@@ -12,5 +11,6 @@ class SupplierViewSet(viewsets.ModelViewSet):
 
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
+
     def get_queryset(self):
-        return Product.objects.filter(supplier=self.kwargs['supplier_pk'])
+        return Product.objects.filter(supplier=self.kwargs["supplier_pk"])
