@@ -2,5 +2,3 @@ django
 djangorestframework
 Pillow
 drf-nested-routers
-django-rest-auth
-django-allauth

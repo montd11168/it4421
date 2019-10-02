@@ -39,18 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
-    # "rest_auth",
-    # "django.contrib.sites",
-    # "allauth",
-    # "allauth.account",
-    # "rest_auth.registration",
     "apps.data",
     "apps.users",
 ]
-
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
