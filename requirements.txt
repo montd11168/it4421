@@ -1,4 +1,4 @@
 django
 djangorestframework
 Pillow
-rest_framework_nested
+django-rest-framework-nested
