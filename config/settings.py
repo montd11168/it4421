@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "apps.data",
+    "apps.users",
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,5 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 TOKEN_EXPIRED_AFTER_SECONDS = 86400
+
+AUTH_USER_MODEL = "users.User"

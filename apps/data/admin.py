@@ -1,12 +1,25 @@
 from django.contrib import admin
 
-from .models import Cart, Comment, Order, Product, Supplier, Vote
+from .models import (
+    Comment,
+    Export,
+    Import,
+    Item,
+    Order,
+    Product,
+    ProductColor,
+    ProductImage,
+    Supplier,
+    Vote,
+)
 
-# Register your models here.
-
-admin.site.register(Supplier)
-admin.site.register(Product)
-admin.site.register(Vote)
 admin.site.register(Comment)
-admin.site.register(Cart)
+admin.site.register(Export)
+admin.site.register(Import)
+admin.site.register(Item)
 admin.site.register(Order)
+admin.site.register(Product)
+admin.site.register(ProductColor)
+admin.site.register(ProductImage)
+admin.site.register(Supplier)
+admin.site.register(Vote)
