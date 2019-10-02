@@ -1,4 +1,4 @@
 django
 djangorestframework
 Pillow
-django-rest-framework-nested
+drf-nested-routers
