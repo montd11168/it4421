@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate
-from .models import User
+from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.models import Group
+
 from .authentication import expires_in, token_expire_handler
-from .serializers import LoginSerializer, UserSerializer, UserProfileSerializer
+from .models import User
+from .serializers import LoginSerializer, UserProfileSerializer, UserSerializer
 
 
 class RegisterView(APIView):
@@ -65,3 +66,11 @@ class LoginView(APIView):
 
             return Response({"token": token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
