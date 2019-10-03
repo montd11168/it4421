@@ -35,7 +35,7 @@ class ProductColor(models.Model):
     count = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return self.color
+        return f"self.color"
 
 
 class ProductImage(models.Model):
@@ -44,7 +44,7 @@ class ProductImage(models.Model):
     descript = models.TextField(max_length=255, blank=True)
 
     def __str__(self):
-        return self.product
+        return f"{self.product}"
 
 
 class Vote(models.Model):
