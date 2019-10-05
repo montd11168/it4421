@@ -16,15 +16,15 @@ from .models import (
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("user", "product")
-    readonly_fields = ('time',)
+    readonly_fields = ("time",)
 
 
 class ExportAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("product", "quantity")
 
 
 class ImportAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("product", "quantity")
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -33,7 +33,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ("user", "status")
-    readonly_fields = ('created',)
+    readonly_fields = ("created",)
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -48,11 +48,11 @@ class ProductImageAdmin(admin.ModelAdmin):
     list_display = ("product", "descript")
 
 
-class SupplierImageAdmin(admin.ModelAdmin):
+class SupplierAdmin(admin.ModelAdmin):
     pass
 
 
-class VoteImageAdmin(admin.ModelAdmin):
+class VoteAdmin(admin.ModelAdmin):
     list_display = ("user", "product")
 
 
@@ -64,5 +64,5 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductColor, ProductColorAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
-admin.site.register(Supplier, SupplierImageAdmin)
-admin.site.register(Vote, VoteImageAdmin)
+admin.site.register(Supplier, SupplierAdmin)
+admin.site.register(Vote, VoteAdmin)

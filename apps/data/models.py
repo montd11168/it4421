@@ -87,13 +87,13 @@ class Order(models.Model):
 
 
 class Item(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quantity = models.SmallIntegerField()
 
     def __str__(self):
-        return f"{self.product} - {self.quantity}"
+        return f"{self.product}"
 
 
 class Import(models.Model):
@@ -103,7 +103,7 @@ class Import(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product} - {self.quantity}"
+        return f"{self.product}"
 
 
 class Export(models.Model):
@@ -113,4 +113,4 @@ class Export(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product} - {self.quantity}"
+        return f"{self.product}"
