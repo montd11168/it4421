@@ -6,13 +6,13 @@ from .models import Comment, Export, Import, Product, ProductColor, ProductImage
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ["image", "descript"]
+        fields = "__all__"
 
 
 class ProductColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductColor
-        fields = ["color", "price", "count"]
+        fields = "__all__"
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ["user", "content"]
+        fields = "__all__"
 
 
 class VoteSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vote
-        fields = ["user", "value"]
+        fields = "__all__"
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -40,28 +40,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = [
-            "id",
-            "supplier",
-            "name",
-            "descript",
-            "operating_system",
-            "ram",
-            "rom",
-            "battery",
-            "front_camera",
-            "rear_camera",
-            "sim",
-            "screen",
-            "memory_card",
-            "votes",
-            "comments",
-            "colors",
-            "images",
-        ]
+        fields = "__all__"
 
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
-        fields = ["id", "name", "logo"]
+        fields = "__all__"

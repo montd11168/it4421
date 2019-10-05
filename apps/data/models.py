@@ -35,7 +35,7 @@ class ProductColor(models.Model):
     count = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return f"self.color"
+        return f"{self.color}"
 
 
 class ProductImage(models.Model):
@@ -83,7 +83,7 @@ class Order(models.Model):
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default="XÁC NHẬN")
 
     def __str__(self):
-        return f"{self.user}-{self.status}"
+        return f"{self.user} - {self.status}"
 
 
 class Item(models.Model):
@@ -93,7 +93,7 @@ class Item(models.Model):
     quantity = models.SmallIntegerField()
 
     def __str__(self):
-        return f"{self.product}-{self.quantity}"
+        return f"{self.product} - {self.quantity}"
 
 
 class Import(models.Model):
@@ -103,7 +103,7 @@ class Import(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product}-{self.quantity}"
+        return f"{self.product} - {self.quantity}"
 
 
 class Export(models.Model):
@@ -113,4 +113,4 @@ class Export(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product}-{self.quantity}"
+        return f"{self.product} - {self.quantity}"
