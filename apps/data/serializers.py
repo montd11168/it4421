@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Comment, Export, Import, Product, ProductColor, ProductImage, Supplier, Vote
+from .models import Comment, Export, Import, Product, ProductColor, ProductImage, Supplier, Vote, Item, Order
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -46,4 +46,18 @@ class ProductSerializer(serializers.ModelSerializer):
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
+        fields = "__all__"
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
         fields = "__all__"
