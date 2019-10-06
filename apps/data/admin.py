@@ -49,7 +49,7 @@ class ProductImageAdmin(admin.ModelAdmin):
 
 
 class SupplierAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ("name",)
 
 
 class VoteAdmin(admin.ModelAdmin):
