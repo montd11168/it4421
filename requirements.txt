@@ -2,3 +2,4 @@ django
 djangorestframework
 Pillow
 drf-nested-routers
+django-rest-framework-roles
