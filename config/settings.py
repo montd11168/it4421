@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "rest_framework.authtoken",
     "apps.data",
     "apps.users",
 ]
@@ -97,7 +96,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
-    "DEFAULT_AUTHENTICATION_CLASSES": ["apps.users.authentication.BearerTokenAuthentication"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "apps.users.authentication.BearerTokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
 }
 
 # Internationalization

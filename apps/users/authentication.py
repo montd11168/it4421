@@ -2,55 +2,36 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import AuthenticationFailed
+
+from .models import Token
 
 
-# this return left time
-def expires_in(token):
-    time_elapsed = timezone.now() - token.created
-    left_time = timedelta(seconds=settings.TOKEN_EXPIRED_AFTER_SECONDS) - time_elapsed
-    return left_time
-
-
-# token checker if token expired or not
-def is_token_expired(token):
-    return expires_in(token) < timedelta(seconds=0)
-
-
-# if token is expired new token will be established
-# If token is expired then it will be removed
-# and new one with different key will be created
-def token_expire_handler(token):
-    is_expired = is_token_expired(token)
-    if is_expired:
-        token.delete()
-        token = Token.objects.create(user=token.user)
-    return is_expired, token
-
-
-# ________________________________________________
-# DEFAULT_AUTHENTICATION_CLASSES
 class BearerTokenAuthentication(TokenAuthentication):
-    """
-    If token is expired then it will be removed
-    and new one with different key will be created
-    """
-
-    keyword = 'Bearer'
+    keyword = "Bearer"
+    model = Token
 
     def authenticate_credentials(self, key):
         try:
-            token = Token.objects.get(key=key)
-        except Token.DoesNotExist:
-            raise AuthenticationFailed("Invalid Token")
+            token = self.model.objects.get(key=key)
+        except self.model.DoesNotExist:
+            raise exceptions.AuthenticationFailed(_("Invalid token."))
 
         if not token.user.is_active:
-            raise AuthenticationFailed("User is not active")
+            raise exceptions.AuthenticationFailed(_("User inactive or deleted."))
 
-        is_expired, token = token_expire_handler(token)
+        is_expired = is_token_expired(token)
+
         if is_expired:
-            raise AuthenticationFailed("The Token is expired")
+            raise exceptions.AuthenticationFailed(_("Token has expired"))
 
         return (token.user, token)
+
+
+def is_token_expired(token):
+    time_elapsed = timezone.now() - token.created
+    left_time = timedelta(seconds=settings.TOKEN_EXPIRED_AFTER_SECONDS) - time_elapsed
+
+    return left_time < timedelta(seconds=0)
