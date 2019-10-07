@@ -2,8 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from .models import User
+from .models import User, Token
 from django.contrib.auth.forms import UserChangeForm
+
+
+class TokenAdmin(admin.ModelAdmin):
+    list_display = ("user", "created")
+    readonly_fields = ("created",)
+    search_fields = ("user",)
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -41,4 +47,5 @@ class CustomizeUserAdmin(UserAdmin):
     ordering = ("date_joined",)
 
 
+admin.site.register(Token, TokenAdmin)
 admin.site.register(User, CustomizeUserAdmin)

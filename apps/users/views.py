@@ -1,13 +1,10 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .authentication import expires_in, token_expire_handler
-from .models import User
+from .models import Token, User
 from .serializers import LoginSerializer, UserProfileSerializer, UserSerializer
 
 
@@ -61,8 +58,8 @@ class LoginView(APIView):
                     {"detail": "Invalid Credentials or activate account"},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
-            token, _ = Token.objects.get_or_create(user=user)
-            is_expired, token = token_expire_handler(token)
+
+            token = Token.objects.create(user=user)
 
             return Response({"token": token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -72,5 +69,5 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        request.user.auth_token.delete()
+        Token.objects.get(key=request.auth).delete()
         return Response(status=status.HTTP_200_OK)
