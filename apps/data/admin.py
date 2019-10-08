@@ -15,37 +15,44 @@ from .models import (
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("user", "product")
+    list_display = ("user", "product", "content", "time")
     readonly_fields = ("time",)
+    search_fields = ("user", "product")
 
 
 class ExportAdmin(admin.ModelAdmin):
     list_display = ("product", "quantity")
+    search_fields = ("product",)
 
 
 class ImportAdmin(admin.ModelAdmin):
     list_display = ("product", "quantity")
+    search_fields = ("product",)
 
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = ("user", "product")
+    search_fields = ("user", "product")
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("user", "status")
+    list_display = ("user", "status", "created")
     readonly_fields = ("created",)
+    search_fields = ("user", "status")
 
 
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ("supplier", "name")
 
 
 class ProductColorAdmin(admin.ModelAdmin):
     list_display = ("product", "color")
+    search_fields = ("product", "color")
 
 
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ("product", "descript")
+    search_fields = ("product", "descript")
 
 
 class SupplierAdmin(admin.ModelAdmin):
@@ -53,7 +60,8 @@ class SupplierAdmin(admin.ModelAdmin):
 
 
 class VoteAdmin(admin.ModelAdmin):
-    list_display = ("user", "product")
+    list_display = ("user", "product", "value")
+    search_fields = ("user", "product", "value")
 
 
 admin.site.register(Comment, CommentAdmin)

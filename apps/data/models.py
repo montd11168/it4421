@@ -81,6 +81,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default="XÁC NHẬN")
+    note = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.status}"
