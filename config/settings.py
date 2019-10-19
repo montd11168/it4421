@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "apps.data",
     "apps.users",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -127,3 +129,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 TOKEN_EXPIRED_AFTER_SECONDS = 86400
 
 AUTH_USER_MODEL = "users.User"
+
+CORS_ORIGIN_ALLOW_ALL = True
