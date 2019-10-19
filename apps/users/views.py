@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Token, User
@@ -9,7 +8,6 @@ from .serializers import LoginSerializer, UserProfileSerializer, UserSerializer
 
 
 class RegisterView(APIView):
-    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
@@ -26,7 +24,6 @@ class RegisterView(APIView):
 
 
 class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         serializer = UserProfileSerializer(request.user)
@@ -44,7 +41,6 @@ class ProfileView(APIView):
 
 
 class LoginView(APIView):
-    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         serializer = LoginSerializer(data=request.data)
@@ -66,7 +62,6 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         Token.objects.get(key=request.auth).delete()

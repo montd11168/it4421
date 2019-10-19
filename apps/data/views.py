@@ -1,35 +1,56 @@
 from rest_framework import viewsets
-from drf_roles.mixins import RoleViewSetMixin
-from .models import Product, Supplier, Item, Order
-from .serializers import ProductSerializer, SupplierSerializer, ItemSerializer, OrderSerializer
+
+from .models import Comment, Item, Order, Product, Supplier, Vote
+from .serializers import (
+    CommentSerializer,
+    ItemSerializer,
+    OrderSerializer,
+    ProductSerializer,
+    SupplierSerializer,
+    VoteSerializer,
+)
 
 
-class SupplierViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
+class SupplierViewSet(viewsets.ModelViewSet):
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()
 
 
-class SProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
+class SProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
 
     def get_queryset(self):
         return Product.objects.filter(supplier=self.kwargs["supplier_pk"])
 
 
-class ProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
 
 
-class ItemViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
+class ItemViewSet(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
         return Item.objects.filter(user=self.request.user)
 
 
-class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
+class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        return Comment.objects.filter(product=self.kwargs["product_pk"])
+
+
+class VoteViewSet(viewsets.ModelViewSet):
+    serializer_class = VoteSerializer
+
+    def get_queryset(self):
+        return Vote.objects.filter(product=self.kwargs["product_pk"])
