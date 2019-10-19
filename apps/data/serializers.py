@@ -27,7 +27,7 @@ class ProductColorSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.username")
+    user = serializers.ReadOnlyField(source="user.email")
 
     class Meta:
         model = Comment
@@ -35,7 +35,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class VoteSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.username")
+    user = serializers.ReadOnlyField(source="user.email")
 
     class Meta:
         model = Vote

@@ -100,7 +100,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "apps.users.authentication.BearerTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-    ],
+    ]
 }
 
 # Internationalization
