@@ -44,8 +44,6 @@ class VoteSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     supplier = serializers.ReadOnlyField(source="supplier.name")
-    colors = ProductColorSerializer(many=True, read_only=True)
-    images = ProductImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product

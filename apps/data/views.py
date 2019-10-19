@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from .models import Comment, Item, Order, Product, Supplier, Vote
+from .models import Comment, Item, Order, Product, Supplier, Vote, ProductColor, ProductImage
 from .serializers import (
     CommentSerializer,
     ItemSerializer,
@@ -8,6 +8,8 @@ from .serializers import (
     ProductSerializer,
     SupplierSerializer,
     VoteSerializer,
+    ProductColorSerializer,
+    ProductImageSerializer,
 )
 
 
@@ -54,3 +56,17 @@ class VoteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Vote.objects.filter(product=self.kwargs["product_pk"])
+
+
+class ImageViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product=self.kwargs["product_pk"])
+
+
+class ColorViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductColorSerializer
+
+    def get_queryset(self):
+        return ProductColor.objects.filter(product=self.kwargs["product_pk"])

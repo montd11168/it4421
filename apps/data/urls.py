@@ -17,6 +17,8 @@ suppliers_router.register(r"products", views.SProductViewSet, base_name="supplie
 products_router = routers.NestedSimpleRouter(router, r"products", lookup="product")
 products_router.register(r"comments", views.CommentViewSet, base_name="product-comments")
 products_router.register(r"votes", views.VoteViewSet, base_name="product-votes")
+products_router.register(r"images", views.ImageViewSet, base_name="product-images")
+products_router.register(r"colors", views.ColorViewSet, base_name="product-colors")
 
 urlpatterns = [
     path("", include(router.urls)), 
