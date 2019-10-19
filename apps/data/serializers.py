@@ -1,6 +1,17 @@
 from rest_framework import serializers
 
-from .models import Comment, Export, Import, Product, ProductColor, ProductImage, Supplier, Vote, Item, Order
+from .models import (
+    Comment,
+    Export,
+    Import,
+    Product,
+    ProductColor,
+    ProductImage,
+    Supplier,
+    Vote,
+    Item,
+    Order,
+)
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
