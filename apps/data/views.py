@@ -1,16 +1,7 @@
 from drf_roles.mixins import RoleViewSetMixin
 from rest_framework import viewsets
 
-from .models import (
-    Comment,
-    Item,
-    Order,
-    Product,
-    ProductColor,
-    ProductImage,
-    Supplier,
-    Vote,
-)
+from .models import Comment, Item, Order, Product, ProductColor, ProductImage, Supplier, Vote
 from .serializers import (
     CommentSerializer,
     ItemSerializer,

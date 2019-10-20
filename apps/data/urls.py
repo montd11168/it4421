@@ -1,6 +1,5 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-
 from rest_framework_nested import routers
 
 from . import views
@@ -21,7 +20,7 @@ products_router.register(r"images", views.ImageViewSet, base_name="product-image
 products_router.register(r"colors", views.ColorViewSet, base_name="product-colors")
 
 urlpatterns = [
-    path("", include(router.urls)), 
-    path("", include(suppliers_router.urls)), 
+    path("", include(router.urls)),
+    path("", include(suppliers_router.urls)),
     path("", include(products_router.urls)),
 ]
