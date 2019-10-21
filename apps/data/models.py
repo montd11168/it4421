@@ -24,8 +24,8 @@ class Product(models.Model):
     screen = models.CharField(max_length=255, blank=True)
     memory_card = models.CharField(max_length=255, blank=True)
 
-    def __str__(self):
-        return f"{self.supplier} {self.name}"
+    # def __str__(self):
+    #     return self.name
 
 
 class ProductColor(models.Model):
@@ -34,8 +34,8 @@ class ProductColor(models.Model):
     price = models.IntegerField(default=0)
     count = models.SmallIntegerField(default=0)
 
-    def __str__(self):
-        return f"{self.color}"
+    # def __str__(self):
+    #     return f"{self.color}"
 
 
 class ProductImage(models.Model):
@@ -91,7 +91,7 @@ class Item(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.SET_NULL, null=True, blank=True, related_name="items"
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductColor, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quantity = models.SmallIntegerField()
 

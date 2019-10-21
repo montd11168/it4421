@@ -59,7 +59,7 @@ class SupplierSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = "__all__"
+        exclude = ("user",)
 
 
 class OrderSerializer(serializers.ModelSerializer):
