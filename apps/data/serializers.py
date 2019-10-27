@@ -4,13 +4,13 @@ from .models import (
     Comment,
     Export,
     Import,
+    Item,
+    Order,
     Product,
     ProductColor,
     ProductImage,
     Supplier,
     Vote,
-    Item,
-    Order,
 )
 
 

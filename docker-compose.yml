@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: postgresql-it4421
+    environment:
+      POSTGRES_USER: it4421
+      POSTGRES_PASSWORD: it4421
+      POSTGRES_DB: it4421
+    volumes:
+      - pgdata:/var/lib/postgressql/data
+    ports:
+      - "5432:5432"
+  web:
+    build: .
+    container_name: it4421
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      DATABASE_NAME: it4421
+      DATABASE_USER: it4421
+      DATABASE_PASSWORD: it4421
+      DATABASE_HOST: db
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

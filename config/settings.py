@@ -25,7 +25,7 @@ SECRET_KEY = "0(4o-^0=os-xkjd_h+4ox6*w9cag=1#lv$ppc3sj7#k3t9hhv1"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["it4421.pythonanywhere.com", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -78,10 +78,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("DATABASE_NAME", "it4421"),
+        "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
+        "USER": os.environ.get("DATABASE_USER", "it4421"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "it4421"),
+        "PORT": "5432",
     }
 }
 

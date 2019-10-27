@@ -1,4 +1,6 @@
 {
-    "python.pythonPath": "/home/vannn1604/.virtualenvs/Django-rest-framework-SA-XtR8q/bin/python",
-    "python.formatting.provider": "black"
+    "python.pythonPath": "/home/vannn/Documents/it4421/.venv/bin/python3",
+    "python.formatting.provider": "black",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }
