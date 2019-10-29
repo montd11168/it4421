@@ -1,8 +1,8 @@
-# psycopg2-binary
+psycopg2-binary
 django
 djangorestframework
 Pillow
 drf-nested-routers
 django-rest-framework-roles
 django-cors-headers
-# celery
+celery
