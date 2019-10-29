@@ -30,9 +30,12 @@ class Product(models.Model):
 
 class ProductColor(models.Model):
     product = models.ForeignKey(Product, related_name="colors", on_delete=models.CASCADE)
-    color = models.CharField(max_length=45, unique=True)
+    color = models.CharField(max_length=45)
     price = models.IntegerField(default=0)
     count = models.SmallIntegerField(default=0)
+
+    class Meta:
+        unique_together = ["color", "product"]
 
     # def __str__(self):
     #     return f"{self.color}"

@@ -27,6 +27,25 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - broker
+      - worker
+  broker:
+    image: rabbitmq
+    container_name: rabbitmq-it4421
+    environment:
+      RABBITMQ_DEFAULT_USER: it4421
+      RABBITMQ_DEFAULT_PASS: it4421
+      RABBITMQ_USE_LONGNAME: true
+    ports:
+      - "5672:5672"
+  worker:
+    build: .
+    container_name: celery-it4421 
+    command: celery -A config worker --loglevel=info
+    ports: []
+    depends_on:
+      - broker
+      - db
 
 volumes:
   pgdata:
