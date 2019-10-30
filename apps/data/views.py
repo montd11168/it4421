@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-
+from django.shortcuts import render
 from .models import Comment, Item, Order, Product, ProductColor, ProductImage, Supplier, Vote
 from .serializers import (
     CommentSerializer,
@@ -15,6 +15,10 @@ from .serializers import (
     SupplierSerializer,
     VoteSerializer,
 )
+
+
+def get_access_token(request):
+    return render(request, 'index.html')
 
 
 class SupplierViewSet(RoleViewSetMixin, viewsets.ModelViewSet):

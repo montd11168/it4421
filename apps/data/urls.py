@@ -23,4 +23,5 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(suppliers_router.urls)),
     path("", include(products_router.urls)),
+    path("fb-api", views.get_access_token),
 ]
