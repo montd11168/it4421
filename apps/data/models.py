@@ -24,8 +24,8 @@ class Product(models.Model):
     screen = models.CharField(max_length=255, blank=True)
     memory_card = models.CharField(max_length=255, blank=True)
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
 
 
 class ProductColor(models.Model):
@@ -37,8 +37,8 @@ class ProductColor(models.Model):
     class Meta:
         unique_together = ["color", "product"]
 
-    # def __str__(self):
-    #     return f"{self.color}"
+    def __str__(self):
+        return f"{self.color}"
 
 
 class ProductImage(models.Model):

@@ -17,10 +17,6 @@ from .serializers import (
 )
 
 
-def get_access_token(request):
-    return render(request, 'index.html')
-
-
 class SupplierViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()

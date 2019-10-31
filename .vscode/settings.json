@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/vannn/Documents/it4421/.venv/bin/python3",
+    "python.pythonPath": "C:\\Users\\Admin\\.virtualenvs\\ocr_server-dome5qMX\\Scripts\\python.exe",
     "python.formatting.provider": "black",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
