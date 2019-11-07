@@ -12,33 +12,36 @@ class Supplier(models.Model):
 
 class Product(models.Model):
     supplier = models.ForeignKey(Supplier, related_name="products", on_delete=models.CASCADE)
+    guarantee = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255, unique=True)
-    descript = models.TextField(max_length=255, blank=True)
-    operating_system = models.CharField(max_length=255, blank=True)
-    ram = models.CharField(max_length=255, blank=True)
-    rom = models.CharField(max_length=255, blank=True)
-    battery = models.CharField(max_length=255, blank=True)
+    screen = models.CharField(max_length=255, blank=True)
+    resolution = models.CharField(max_length=255, blank=True)
     front_camera = models.CharField(max_length=255, blank=True)
     rear_camera = models.CharField(max_length=255, blank=True)
-    sim = models.CharField(max_length=255, blank=True)
-    screen = models.CharField(max_length=255, blank=True)
-    memory_card = models.CharField(max_length=255, blank=True)
+    chip = models.CharField(max_length=255, blank=True)
+    ram = models.CharField(max_length=255, blank=True)
+    rom = models.CharField(max_length=255, blank=True)
+    pin = models.CharField(max_length=255, blank=True)
+    operating_system = models.CharField(max_length=255, blank=True)
+    charging_port = models.CharField(max_length=255, blank=True)
+    price = models.IntegerField(default=0)
+    count = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
 
 
-class ProductColor(models.Model):
-    product = models.ForeignKey(Product, related_name="colors", on_delete=models.CASCADE)
-    color = models.CharField(max_length=45)
-    price = models.IntegerField(default=0)
-    count = models.SmallIntegerField(default=0)
+# class ProductColor(models.Model):
+#     product = models.ForeignKey(Product, related_name="colors", on_delete=models.CASCADE)
+#     color = models.CharField(max_length=45)
+#     price = models.IntegerField(default=0)
+#     count = models.SmallIntegerField(default=0)
 
-    class Meta:
-        unique_together = ["color", "product"]
+#     class Meta:
+#         unique_together = ["color", "product"]
 
-    def __str__(self):
-        return f"{self.color}"
+#     def __str__(self):
+#         return f"{self.color}"
 
 
 class ProductImage(models.Model):
@@ -94,7 +97,7 @@ class Item(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.SET_NULL, null=True, blank=True, related_name="items"
     )
-    product = models.ForeignKey(ProductColor, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quantity = models.SmallIntegerField()
 

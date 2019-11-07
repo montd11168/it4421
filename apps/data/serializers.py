@@ -7,7 +7,7 @@ from .models import (
     Item,
     Order,
     Product,
-    ProductColor,
+    # ProductColor,
     ProductImage,
     Supplier,
     Vote,
@@ -20,10 +20,10 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ProductColorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductColor
-        fields = "__all__"
+# class ProductColorSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProductColor
+#         fields = "__all__"
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class VoteSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.email")
+    # user = serializers.ReadOnlyField(source="user.email")
 
     class Meta:
         model = Vote
@@ -44,6 +44,9 @@ class VoteSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     supplier = serializers.ReadOnlyField(source="supplier.name")
+    images = ProductImageSerializer(many=True, read_only=True)
+    votes = VoteSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product

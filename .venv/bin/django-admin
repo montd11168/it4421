@@ -1,4 +1,5 @@
-#!/home/vannn/Documents/it4421/.venv/bin/python3
+#!/home/van/Documents/it4421/.venv/bin/python3
+
 # -*- coding: utf-8 -*-
 import re
 import sys
