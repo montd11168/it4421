@@ -41,7 +41,6 @@ class User(AbstractUser):
     address = models.TextField(blank=True)
     gender = models.CharField(max_length=9, choices=GENDER_CHOICES, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    avatar = models.ImageField(upload_to="user", blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

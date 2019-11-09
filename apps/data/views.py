@@ -1,15 +1,15 @@
 from drf_roles.mixins import RoleViewSetMixin
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from django.shortcuts import render
-from .models import Comment, Item, Order, Product, ProductColor, ProductImage, Supplier, Vote
+from .models import Comment, Cart, Order, Product, ProductImage, Supplier, Vote
 from .serializers import (
     CommentSerializer,
-    ItemSerializer,
+    CartSerializer,
+    CartCreateSerializer,
     OrderSerializer,
-    ProductColorSerializer,
     ProductImageSerializer,
     ProductSerializer,
     SupplierSerializer,
@@ -34,23 +34,23 @@ class ProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all()
 
 
-class ItemViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
-    serializer_class = ItemSerializer
+class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
+    serializer_class = CartSerializer
 
     def get_queryset(self):
-        return Item.objects.filter(user=self.request.user)
+        return Cart.objects.filter(user=self.request.user)
 
     def create(self, request):
-        serializer = ItemSerializer(data=request.data)
+        serializer = CartCreateSerializer(data=request.data)
         if serializer.is_valid():
-            product = serializer.validated_data["product"]
+            product_id = serializer.validated_data["product_id"]
             quantity = serializer.validated_data["quantity"]
-            item = Item.objects.filter(product=product)
-            if not item:
-                Item.objects.create(product=product, quantity=quantity, user=request.user)
+            cart, created = Cart.objects.get_or_create(product_id=product_id, user=request.user)
+            if created:
+                cart.quantity = quantity
             else:
-                item[0].quantity += quantity
-                item[0].save()
+                cart.quantity += quantity
+            cart.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,6 +60,20 @@ class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+    def create(self, request):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            product = serializer.validated_data["product"]
+            quantity = serializer.validated_data["quantity"]
+            cart = Cart.objects.filter(product=product)
+            if not cart:
+                Cart.objects.create(product=product, quantity=quantity, user=request.user)
+            else:
+                cart[0].quantity += quantity
+                cart[0].save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CommentViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
@@ -81,10 +95,3 @@ class ImageViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProductImage.objects.filter(product=self.kwargs["product_pk"])
-
-
-class ColorViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
-    serializer_class = ProductColorSerializer
-
-    def get_queryset(self):
-        return ProductColor.objects.filter(product=self.kwargs["product_pk"])

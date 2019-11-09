@@ -13,7 +13,6 @@ class UserProfileSerializer(serializers.Serializer):
     address = serializers.CharField(required=False)
     gender = serializers.CharField(required=False)
     date_of_birth = serializers.DateField(required=False)
-    avatar = serializers.ImageField(required=False)
 
 
 class UserSerializer(serializers.ModelSerializer):

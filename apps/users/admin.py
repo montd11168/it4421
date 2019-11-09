@@ -32,7 +32,6 @@ class CustomizeUserAdmin(UserAdmin):
                     "address",
                     "gender",
                     "date_of_birth",
-                    "avatar",
                 )
             },
         ),

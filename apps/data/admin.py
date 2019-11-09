@@ -4,10 +4,9 @@ from .models import (
     Comment,
     Export,
     Import,
-    Item,
+    Cart,
     Order,
     Product,
-    ProductColor,
     ProductImage,
     Supplier,
     Vote,
@@ -30,7 +29,7 @@ class ImportAdmin(admin.ModelAdmin):
     search_fields = ("product",)
 
 
-class ItemAdmin(admin.ModelAdmin):
+class CartAdmin(admin.ModelAdmin):
     list_display = ("user", "product")
     search_fields = ("user", "product")
 
@@ -43,11 +42,6 @@ class OrderAdmin(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     search_fields = ("supplier", "name")
-
-
-class ProductColorAdmin(admin.ModelAdmin):
-    list_display = ("product", "color")
-    search_fields = ("product", "color")
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -67,10 +61,9 @@ class VoteAdmin(admin.ModelAdmin):
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Export, ExportAdmin)
 admin.site.register(Import, ImportAdmin)
-admin.site.register(Item, ItemAdmin)
+admin.site.register(Cart, CartAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(ProductColor, ProductColorAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(Supplier, SupplierAdmin)
 admin.site.register(Vote, VoteAdmin)

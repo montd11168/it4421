@@ -13,7 +13,9 @@ class Supplier(models.Model):
 class Product(models.Model):
     supplier = models.ForeignKey(Supplier, related_name="products", on_delete=models.CASCADE)
     guarantee = models.CharField(max_length=255, blank=True)
+    guarantee_des = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255, unique=True)
+    color = models.CharField(max_length=255, blank=True)
     screen = models.CharField(max_length=255, blank=True)
     resolution = models.CharField(max_length=255, blank=True)
     front_camera = models.CharField(max_length=255, blank=True)
@@ -24,24 +26,15 @@ class Product(models.Model):
     pin = models.CharField(max_length=255, blank=True)
     operating_system = models.CharField(max_length=255, blank=True)
     charging_port = models.CharField(max_length=255, blank=True)
-    price = models.IntegerField(default=0)
+    retail_price = models.IntegerField(default=0, blank=True)
+    listed_price = models.IntegerField(default=0)
+    promotional_price = models.IntegerField(default=0, blank=True)
     count = models.SmallIntegerField(default=0)
-
+    voting = models.FloatField(default=0, blank=True)
+    description = models.TextField(blank=True)
+    
     def __str__(self):
         return self.name
-
-
-# class ProductColor(models.Model):
-#     product = models.ForeignKey(Product, related_name="colors", on_delete=models.CASCADE)
-#     color = models.CharField(max_length=45)
-#     price = models.IntegerField(default=0)
-#     count = models.SmallIntegerField(default=0)
-
-#     class Meta:
-#         unique_together = ["color", "product"]
-
-#     def __str__(self):
-#         return f"{self.color}"
 
 
 class ProductImage(models.Model):
@@ -50,13 +43,13 @@ class ProductImage(models.Model):
     descript = models.TextField(max_length=255, blank=True)
 
     def __str__(self):
-        return f"{self.product}"
+        return self.product
 
 
 class Vote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="votes")
-    value = models.SmallIntegerField()
+    value = models.SmallIntegerField(default=5)
 
     class Meta:
         unique_together = ["user", "product"]
@@ -88,21 +81,22 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default="XÁC NHẬN")
     note = models.TextField(blank=True)
+    total = models.BigIntegerField(default=0)
 
     def __str__(self):
         return f"{self.user} - {self.status}"
 
 
-class Item(models.Model):
+class Cart(models.Model):
     order = models.ForeignKey(
-        Order, on_delete=models.SET_NULL, null=True, blank=True, related_name="items"
+        Order, on_delete=models.SET_NULL, null=True, blank=True, related_name="carts"
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    quantity = models.SmallIntegerField()
+    quantity = models.SmallIntegerField(default=0, blank=True)
 
     def __str__(self):
-        return f"{self.product}"
+        return f"{self.user} - {self.product}"
 
 
 class Import(models.Model):
@@ -112,7 +106,7 @@ class Import(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product}"
+        return self.product
 
 
 class Export(models.Model):
@@ -122,4 +116,4 @@ class Export(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product}"
+        return self.product

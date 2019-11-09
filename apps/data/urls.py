@@ -7,7 +7,7 @@ from . import views
 router = DefaultRouter()
 router.register(r"suppliers", views.SupplierViewSet, base_name="suppliers")
 router.register(r"products", views.ProductViewSet, base_name="products")
-router.register(r"items", views.ItemViewSet, base_name="items")
+router.register(r"carts", views.CartViewSet, base_name="carts")
 router.register(r"orders", views.OrderViewSet, base_name="orders")
 
 suppliers_router = routers.NestedSimpleRouter(router, r"suppliers", lookup="supplier")
@@ -17,7 +17,6 @@ products_router = routers.NestedSimpleRouter(router, r"products", lookup="produc
 products_router.register(r"comments", views.CommentViewSet, base_name="product-comments")
 products_router.register(r"votes", views.VoteViewSet, base_name="product-votes")
 products_router.register(r"images", views.ImageViewSet, base_name="product-images")
-products_router.register(r"colors", views.ColorViewSet, base_name="product-colors")
 
 urlpatterns = [
     path("", include(router.urls)),
