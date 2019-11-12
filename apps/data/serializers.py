@@ -63,9 +63,17 @@ class CartCreateSerializer(serializers.Serializer):
     quantity = serializers.IntegerField()
 
 
+class CartUpdateSerializer(serializers.Serializer):
+    quantity = serializers.IntegerField()
+
+
 class OrderSerializer(serializers.ModelSerializer):
     carts = CartSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
         fields = "__all__"
+
+
+class OrderCreateSerializer(serializers.Serializer):
+    cart_id = serializers.IntegerField()

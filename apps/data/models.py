@@ -43,7 +43,7 @@ class ProductImage(models.Model):
     descript = models.TextField(max_length=255, blank=True)
 
     def __str__(self):
-        return self.product
+        return f"self.product"
 
 
 class Vote(models.Model):
@@ -106,7 +106,7 @@ class Import(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product
+        return f"self.product"
 
 
 class Export(models.Model):
@@ -116,4 +116,4 @@ class Export(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product
+        return f"self.product"

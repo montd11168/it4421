@@ -9,7 +9,9 @@ from .serializers import (
     CommentSerializer,
     CartSerializer,
     CartCreateSerializer,
+    CartUpdateSerializer,
     OrderSerializer,
+    OrderCreateSerializer,
     ProductImageSerializer,
     ProductSerializer,
     SupplierSerializer,
@@ -54,6 +56,21 @@ class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def update(self, request, pk=None):
+        serializer = CartUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            quantity = serializer.validated_data["quantity"]
+            Cart.objects.filter(pk=pk).update(quantity=quantity)
+            cart = Cart.objects.get(pk=pk)
+            serializer = CartSerializer(cart)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def destroy(self, request, pk=None):
+    #     cart = Cart.objects.filter(user=self.request.user, pk=pk)
+    #     print(cart)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     serializer_class = OrderSerializer
@@ -62,17 +79,13 @@ class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
         return Order.objects.filter(user=self.request.user)
 
     def create(self, request):
-        serializer = OrderSerializer(data=request.data)
+        serializer = OrderCreateSerializer(data=request.data)
         if serializer.is_valid():
-            product = serializer.validated_data["product"]
-            quantity = serializer.validated_data["quantity"]
-            cart = Cart.objects.filter(product=product)
-            if not cart:
-                Cart.objects.create(product=product, quantity=quantity, user=request.user)
-            else:
-                cart[0].quantity += quantity
-                cart[0].save()
-            return Response(status=status.HTTP_201_CREATED)
+            cart_id = serializer.validated_data["cart_id"]
+            order = Order.objects.create(user=request.user)
+            cart = Cart.objects.filter(pk=cart_id).update(order=order)
+            serializer = OrderSerializer(order)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -95,3 +108,6 @@ class ImageViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProductImage.objects.filter(product=self.kwargs["product_pk"])
+
+
+# add order with list cart
