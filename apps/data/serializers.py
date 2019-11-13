@@ -77,3 +77,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.Serializer):
     cart_id = serializers.IntegerField()
+    

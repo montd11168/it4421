@@ -66,11 +66,6 @@ class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def destroy(self, request, pk=None):
-    #     cart = Cart.objects.filter(user=self.request.user, pk=pk)
-    #     print(cart)
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     serializer_class = OrderSerializer
@@ -79,14 +74,22 @@ class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
         return Order.objects.filter(user=self.request.user)
 
     def create(self, request):
-        serializer = OrderCreateSerializer(data=request.data)
+        serializer = OrderCreateSerializer(data=request.data, many=True)
         if serializer.is_valid():
-            cart_id = serializer.validated_data["cart_id"]
             order = Order.objects.create(user=request.user)
-            cart = Cart.objects.filter(pk=cart_id).update(order=order)
+            for cart in serializer.validated_data:
+                cart_id = cart['cart_id']
+                cart = Cart.objects.filter(pk=cart_id).update(order=order)
+                cart = Cart.objects.get(pk=cart_id)
+                order.total += cart.quantity * cart.product.listed_price
+                order.save()
             serializer = OrderSerializer(order)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        Order.objects.filter(pk=pk).update(status="ĐÃ HỦY")
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
