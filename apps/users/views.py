@@ -10,6 +10,7 @@ import string
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 def password_reset(length=8):
     random_string = string.ascii_letters + string.digits
     return ''.join(random.choice(random_string) for i in range(length))
@@ -78,9 +79,16 @@ class LogoutView(APIView):
 class PasswordResetView(APIView):
     
     def get(self, request, format=None):
-        Token.objects.filter(user=request.user).delete()
-        user = User.objects.get(user=request.user)
-        user.set_password(password_reset)
+        email = request.GET['email']
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        new_password = password_reset()
+        print(new_password)
+        user.set_password(new_password)
         user.save()
-        send_mail('IT4421 Password Reset', user.password, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+        send_mail('IT4421 Password Reset', new_password, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+        Token.objects.filter(user=user).delete()
         return Response(status=status.HTTP_200_OK)
