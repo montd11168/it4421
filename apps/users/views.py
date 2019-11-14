@@ -86,7 +86,6 @@ class PasswordResetView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         new_password = password_reset()
-        print(new_password)
         user.set_password(new_password)
         user.save()
         send_mail('IT4421 Password Reset', new_password, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
