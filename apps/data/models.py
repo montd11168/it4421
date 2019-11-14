@@ -30,7 +30,7 @@ class Product(models.Model):
     listed_price = models.IntegerField(default=0)
     promotional_price = models.IntegerField(default=0, blank=True)
     count = models.SmallIntegerField(default=0)
-    voting = models.FloatField(default=0, blank=True)
+    voting = models.FloatField(default=None, blank=True, null=True)
     description = models.TextField(blank=True)
     
     def __str__(self):

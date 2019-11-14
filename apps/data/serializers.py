@@ -27,12 +27,20 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class CommentCreateSerializer(serializers.Serializer):
+    content = serializers.CharField()
+
+
 class VoteSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.email")
 
     class Meta:
         model = Vote
         fields = "__all__"
+
+
+class VoteCreateSerializer(serializers.Serializer):
+    value = serializers.IntegerField()
 
 
 class ProductSerializer(serializers.ModelSerializer):

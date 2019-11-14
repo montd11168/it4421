@@ -7,6 +7,7 @@ from django.shortcuts import render
 from .models import Comment, Cart, Order, Product, ProductImage, Supplier, Vote
 from .serializers import (
     CommentSerializer,
+    CommentCreateSerializer,
     CartSerializer,
     CartCreateSerializer,
     CartUpdateSerializer,
@@ -16,7 +17,9 @@ from .serializers import (
     ProductSerializer,
     SupplierSerializer,
     VoteSerializer,
+    VoteCreateSerializer,
 )
+from django.db.models import Avg
 
 
 class SupplierViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
@@ -78,7 +81,7 @@ class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
         if serializer.is_valid():
             order = Order.objects.create(user=request.user)
             for cart in serializer.validated_data:
-                cart_id = cart['cart_id']
+                cart_id = cart["cart_id"]
                 cart = Cart.objects.filter(pk=cart_id).update(order=order)
                 cart = Cart.objects.get(pk=cart_id)
                 order.total += cart.quantity * cart.product.listed_price
@@ -98,12 +101,34 @@ class CommentViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         return Comment.objects.filter(product=self.kwargs["product_pk"])
 
+    def create(self, request, product_pk=None):
+        serializer = CommentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            content = serializer.validated_data["content"]
+            product = Product.objects.get(pk=product_pk)
+            comment = Comment.objects.create(product=product, content=content, user=request.user)
+            serializer = CommentSerializer(comment)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class VoteViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     serializer_class = VoteSerializer
 
     def get_queryset(self):
         return Vote.objects.filter(product=self.kwargs["product_pk"])
+
+    def create(self, request, product_pk=None):
+        serializer = VoteCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            value = serializer.validated_data["value"]
+            product = Product.objects.get(pk=product_pk)
+            vote = Vote.objects.create(product=product, value=value, user=request.user)
+            product.voting = Vote.objects.filter(product=product).aggregate(Avg('value'))['value__avg']
+            product.save()
+            serializer = VoteSerializer(vote)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ImageViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
@@ -112,5 +137,4 @@ class ImageViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         return ProductImage.objects.filter(product=self.kwargs["product_pk"])
 
-
-# add order with list cart
+# send email, reset password

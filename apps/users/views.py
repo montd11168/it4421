@@ -5,6 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Token, User
 from .serializers import LoginSerializer, UserProfileSerializer, UserSerializer
+import random
+import string
+from django.core.mail import send_mail
+from django.conf import settings
+
+def password_reset(length=8):
+    random_string = string.ascii_letters + string.digits
+    return ''.join(random.choice(random_string) for i in range(length))
 
 
 class RegisterView(APIView):
@@ -27,7 +35,6 @@ class ProfileView(APIView):
 
     def get(self, request, format=None):
         serializer = UserProfileSerializer(request.user)
-        print(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, format=None):
@@ -65,4 +72,15 @@ class LogoutView(APIView):
 
     def get(self, request, format=None):
         Token.objects.get(key=request.auth).delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+class PasswordResetView(APIView):
+    
+    def get(self, request, format=None):
+        Token.objects.filter(user=request.user).delete()
+        user = User.objects.get(user=request.user)
+        user.set_password(password_reset)
+        user.save()
+        send_mail('IT4421 Password Reset', user.password, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
         return Response(status=status.HTTP_200_OK)
