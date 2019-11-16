@@ -14,7 +14,7 @@ class Product(models.Model):
     supplier = models.ForeignKey(Supplier, related_name="products", on_delete=models.CASCADE)
     guarantee = models.CharField(max_length=255, blank=True)
     guarantee_des = models.CharField(max_length=255, blank=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True)
     color = models.CharField(max_length=255, blank=True)
     screen = models.CharField(max_length=255, blank=True)
     resolution = models.CharField(max_length=255, blank=True)
@@ -33,8 +33,8 @@ class Product(models.Model):
     voting = models.FloatField(default=None, blank=True, null=True)
     description = models.TextField(blank=True)
     
-    class Meta:
-        unique_together = ['supplier', 'name']
+    # class Meta:
+    #     unique_together = ['supplier', 'name']
 
     def __str__(self):
         return self.name
