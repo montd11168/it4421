@@ -3,18 +3,26 @@ from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from .models import Token, User
 from .serializers import LoginSerializer, UserProfileSerializer, UserSerializer
 import random
 import string
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
 
 
 def password_reset(length=8):
     random_string = string.ascii_letters + string.digits
     return ''.join(random.choice(random_string) for i in range(length))
 
+
+class UserViewSet(ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    
 
 class RegisterView(APIView):
 
@@ -27,8 +35,10 @@ class RegisterView(APIView):
             user.set_password(password)
             user.groups.add(Group.objects.get(name="user"))
             user.save()
-            serializer = UserProfileSerializer(user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            User.objects.filter(pk=user.id).update(**serializer.validated_data)
+            return Response(status=status.HTTP_201_CREATED)
+            # serializer = UserProfileSerializer(user)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

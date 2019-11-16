@@ -14,7 +14,7 @@ class Product(models.Model):
     supplier = models.ForeignKey(Supplier, related_name="products", on_delete=models.CASCADE)
     guarantee = models.CharField(max_length=255, blank=True)
     guarantee_des = models.CharField(max_length=255, blank=True)
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     color = models.CharField(max_length=255, blank=True)
     screen = models.CharField(max_length=255, blank=True)
     resolution = models.CharField(max_length=255, blank=True)
@@ -27,12 +27,15 @@ class Product(models.Model):
     operating_system = models.CharField(max_length=255, blank=True)
     charging_port = models.CharField(max_length=255, blank=True)
     retail_price = models.IntegerField(default=0, blank=True)
-    listed_price = models.IntegerField(default=0)
+    listed_price = models.IntegerField(default=0, blank=True)
     promotional_price = models.IntegerField(default=0, blank=True)
-    count = models.SmallIntegerField(default=0)
+    count = models.SmallIntegerField(default=0, blank=True)
     voting = models.FloatField(default=None, blank=True, null=True)
     description = models.TextField(blank=True)
     
+    class Meta:
+        unique_together = ['supplier', 'name']
+
     def __str__(self):
         return self.name
 

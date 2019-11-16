@@ -1,7 +1,8 @@
-# it4421
+`Python 3 require`
 
-pip install -r requirements.txt
-
-python manage.py migrate
-
-python manage.py runserver
+```sh
+$ pip install -r requirements.txt
+$ python manage.py migrate
+$ python manage.py runserver
+```
+API root: http://127.0.0.1:8000

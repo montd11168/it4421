@@ -15,6 +15,7 @@ from .serializers import (
     OrderCreateSerializer,
     ProductImageSerializer,
     ProductSerializer,
+    ProductCreateSerializer,
     SupplierSerializer,
     VoteSerializer,
     VoteCreateSerializer,
@@ -37,6 +38,18 @@ class SProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 class ProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+
+    def create(self, request):
+        serializer = ProductCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            supplier_id = serializer.validated_data['supplier_id']
+            name = serializer.validated_data['name']
+            product, created = Product.objects.get_or_create(supplier_id=supplier_id, name=name)
+            if created:
+                Product.objects.filter(pk=product.id).update(**serializer.validated_data)
+                return Response(status=status.HTTP_200_OK)
+            return Response({"message": "Product Exists."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
@@ -136,5 +149,3 @@ class ImageViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ProductImage.objects.filter(product=self.kwargs["product_pk"])
-
-# send email, reset password
