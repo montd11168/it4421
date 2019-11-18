@@ -5,7 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Token, User
-from .serializers import LoginSerializer, UserProfileSerializer, UserSerializer
+from .serializers import (
+    LoginSerializer,
+    UserProfileSerializer,
+    UserSerializer,
+    UserRegisterSerializer,
+)
 import random
 import string
 from django.core.mail import send_mail
@@ -15,19 +20,18 @@ from rest_framework.permissions import IsAuthenticated
 
 def password_reset(length=8):
     random_string = string.ascii_letters + string.digits
-    return ''.join(random.choice(random_string) for i in range(length))
+    return "".join(random.choice(random_string) for i in range(length))
 
 
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
-    
+
 
 class RegisterView(APIView):
-
     def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
             password = serializer.validated_data["password"]
@@ -36,14 +40,12 @@ class RegisterView(APIView):
             user.groups.add(Group.objects.get(name="user"))
             user.save()
             User.objects.filter(pk=user.id).update(**serializer.validated_data)
-            return Response(status=status.HTTP_201_CREATED)
-            # serializer = UserProfileSerializer(user)
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer = UserProfileSerializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileView(APIView):
-
     def get(self, request, format=None):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -59,7 +61,6 @@ class ProfileView(APIView):
 
 
 class LoginView(APIView):
-
     def post(self, request, format=None):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -80,16 +81,14 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-
     def get(self, request, format=None):
         Token.objects.get(key=request.auth).delete()
         return Response(status=status.HTTP_200_OK)
 
 
 class PasswordResetView(APIView):
-    
     def get(self, request, format=None):
-        email = request.GET['email']
+        email = request.GET["email"]
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -98,6 +97,12 @@ class PasswordResetView(APIView):
         new_password = password_reset()
         user.set_password(new_password)
         user.save()
-        send_mail('IT4421 Password Reset', new_password, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+        send_mail(
+            "IT4421 Password Reset",
+            new_password,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
         Token.objects.filter(user=user).delete()
         return Response(status=status.HTTP_200_OK)
