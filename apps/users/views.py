@@ -40,6 +40,7 @@ class RegisterView(APIView):
             user.groups.add(Group.objects.get(name="user"))
             user.save()
             User.objects.filter(pk=user.id).update(**serializer.validated_data)
+            user = User.objects.get(pk=user.id)
             serializer = UserProfileSerializer(user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
