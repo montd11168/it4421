@@ -10,6 +10,8 @@ from .serializers import (
     UserProfileSerializer,
     UserSerializer,
     UserRegisterSerializer,
+    UserProfileUpdateSerializer,
+    PasswordResetSerializer,
 )
 import random
 import string
@@ -41,18 +43,21 @@ class RegisterView(APIView):
             user.save()
             User.objects.filter(pk=user.id).update(**serializer.validated_data)
             user = User.objects.get(pk=user.id)
-            serializer = UserProfileSerializer(user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # serializer = UserSerializer(user)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, format=None):
-        serializer = UserProfileSerializer(data=request.data)
+        serializer = UserProfileUpdateSerializer(data=request.data)
         if serializer.is_valid():
             User.objects.filter(email=request.user).update(**serializer.data)
             user = User.objects.get(email=request.user)
@@ -77,7 +82,7 @@ class LoginView(APIView):
 
             token = Token.objects.create(user=user)
 
-            return Response({"token": token.key}, status=status.HTTP_200_OK)
+            return Response({"Token": token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -88,22 +93,25 @@ class LogoutView(APIView):
 
 
 class PasswordResetView(APIView):
-    def get(self, request, format=None):
-        email = request.GET["email"]
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data["email"]
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        new_password = password_reset()
-        user.set_password(new_password)
-        user.save()
-        send_mail(
-            "IT4421 Password Reset",
-            new_password,
-            settings.EMAIL_HOST_USER,
-            [user.email],
-            fail_silently=False,
-        )
-        Token.objects.filter(user=user).delete()
-        return Response(status=status.HTTP_200_OK)
+            new_password = password_reset()
+            user.set_password(new_password)
+            user.save()
+            send_mail(
+                "IT4421 Password Reset",
+                new_password,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False,
+            )
+            Token.objects.filter(user=user).delete()
+            return Response({"message": "Please check your email."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
