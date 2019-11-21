@@ -1,4 +1,5 @@
 `Docker required`
+Install docker for window: https://docs.docker.com/docker-for-windows/install/
 
 Start
 ```sh
