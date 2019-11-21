@@ -78,23 +78,23 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-    }
-}
-
 # DATABASES = {
 #     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": os.environ.get("DATABASE_NAME", "it4421"),
-#         "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
-#         "USER": os.environ.get("DATABASE_USER", "it4421"),
-#         "PASSWORD": os.environ.get("DATABASE_PASSWORD", "it4421"),
-#         "PORT": "5432",
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
 #     }
 # }
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("DATABASE_NAME", "it4421"),
+        "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
+        "USER": os.environ.get("DATABASE_USER", "it4421"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "it4421"),
+        "PORT": "5432",
+    }
+}
 
 
 # Password validation
@@ -139,13 +139,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 TOKEN_EXPIRED_AFTER_SECONDS = 86400
 
 AUTH_USER_MODEL = "users.User"
+ADMIN_USERNAME = "admin"
+ADMIN_EMAIL = "admin@gmail.com"
+ADMIN_PASSWORD = "admin"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-EMAIL_HOST = 'smtp.fastmail.com'
+EMAIL_HOST = "smtp.fastmail.com"
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'vannn@fastmail.com'
-EMAIL_HOST_PASSWORD = 'ufuuu7gxc6927zh8'
+EMAIL_HOST_USER = "vannn@fastmail.com"
+EMAIL_HOST_PASSWORD = "ufuuu7gxc6927zh8"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 

@@ -15,7 +15,7 @@ services:
   web:
     build: .
     container_name: it4421
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ["bash", "entrypoint.sh"]
     environment:
       DATABASE_NAME: it4421
       DATABASE_USER: it4421

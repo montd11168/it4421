@@ -18,7 +18,7 @@ import string
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
-
+from django.core.management.commands import loaddata
 
 def password_reset(length=8):
     random_string = string.ascii_letters + string.digits
