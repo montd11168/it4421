@@ -1,8 +1,12 @@
-`Python 3 require`
+`Docker required`
 
+Start
 ```sh
-$ pip install -r requirements.txt
-$ python manage.py migrate
-$ python manage.py runserver
+$ sudo docker-compose up -d
 ```
+Stop
+```sh
+$ sudo docker-compose up -d
+```
+
 API root: http://127.0.0.1:8000
