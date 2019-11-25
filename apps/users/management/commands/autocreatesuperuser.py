@@ -1,10 +1,11 @@
 from django.core.management.base import BaseCommand
-from apps.users.models import User
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
+        User = get_user_model()
         email = settings.ADMIN_EMAIL
         username = settings.ADMIN_USERNAME
         password = settings.ADMIN_PASSWORD

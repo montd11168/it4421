@@ -1,10 +1,10 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
 import binascii
 import os
 
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Token(models.Model):
@@ -36,11 +36,12 @@ class Token(models.Model):
 class User(AbstractUser):
     GENDER_CHOICES = [("NAM", "Nam"), ("NỮ", "Nữ"), ("KHÁC", "Khác")]
     email = models.EmailField(_("email address"), unique=True)
-    username = models.CharField(max_length=50, blank=True)
+    username = models.CharField(max_length=50, blank=True, null=True)
     phone = models.IntegerField(null=True, blank=True)
-    address = models.TextField(blank=True)
-    gender = models.CharField(max_length=9, choices=GENDER_CHOICES, blank=True)
+    address = models.TextField(blank=True, null=True)
+    gender = models.CharField(max_length=9, choices=GENDER_CHOICES, blank=True, default="Nam")
     date_of_birth = models.DateField(null=True, blank=True)
+    verificate_code = models.UUIDField(null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

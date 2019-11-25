@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class UserProfileSerializer(serializers.Serializer):
     last_login = serializers.DateTimeField(required=False)
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
     date_joined = serializers.DateTimeField(required=False)
     email = serializers.ReadOnlyField()
     username = serializers.CharField(required=False)
@@ -16,8 +16,6 @@ class UserProfileSerializer(serializers.Serializer):
 
 
 class UserProfileUpdateSerializer(serializers.Serializer):
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
     phone = serializers.IntegerField(required=False)
     address = serializers.CharField(required=False)
@@ -32,8 +30,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.Serializer):
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
     email = serializers.EmailField()
     password = serializers.CharField()
     username = serializers.CharField(required=False)
@@ -50,3 +46,14 @@ class LoginSerializer(serializers.Serializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class VerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    verificate_code = serializers.UUIDField()
+
+
+class PermissionSerializer(serializers.Serializer):
+    is_active = serializers.BooleanField(read_only=True)
+    is_staff = serializers.BooleanField(read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)

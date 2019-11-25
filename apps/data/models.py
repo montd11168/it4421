@@ -14,7 +14,7 @@ class Product(models.Model):
     supplier = models.ForeignKey(Supplier, related_name="products", on_delete=models.CASCADE)
     guarantee = models.CharField(max_length=255, blank=True)
     guarantee_des = models.CharField(max_length=255, blank=True)
-    name = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255)
     color = models.CharField(max_length=255, blank=True)
     screen = models.CharField(max_length=255, blank=True)
     resolution = models.CharField(max_length=255, blank=True)
@@ -27,12 +27,12 @@ class Product(models.Model):
     operating_system = models.CharField(max_length=255, blank=True)
     charging_port = models.CharField(max_length=255, blank=True)
     retail_price = models.IntegerField(default=0, blank=True)
-    listed_price = models.IntegerField(default=0, blank=True)
+    listed_price = models.IntegerField(default=0)
     promotional_price = models.IntegerField(default=0, blank=True)
-    count = models.SmallIntegerField(default=0, blank=True)
+    count = models.SmallIntegerField(default=0)
     voting = models.FloatField(default=None, blank=True, null=True)
     description = models.TextField(blank=True)
-    
+
     # class Meta:
     #     unique_together = ['supplier', 'name']
 
@@ -43,7 +43,7 @@ class Product(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
     image = models.ImageField(upload_to="product", blank=True)
-    descript = models.TextField(max_length=255, blank=True)
+    description = models.TextField(max_length=255, blank=True)
 
     def __str__(self):
         return f"self.product"
@@ -65,7 +65,7 @@ class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="comments")
     content = models.TextField(blank=True)
-    time = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user} - {self.product}"
@@ -81,7 +81,7 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default="XÁC NHẬN")
     note = models.TextField(blank=True)
     total = models.BigIntegerField(default=0)

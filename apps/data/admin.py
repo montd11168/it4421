@@ -14,8 +14,8 @@ from .models import (
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("user", "product", "content", "time")
-    readonly_fields = ("time",)
+    list_display = ("user", "product", "content", "created_at")
+    readonly_fields = ("created_at",)
     search_fields = ("user", "product")
 
 
@@ -35,8 +35,8 @@ class CartAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("user", "status", "created")
-    readonly_fields = ("created",)
+    list_display = ("user", "status", "created_at")
+    readonly_fields = ("created_at",)
     search_fields = ("user", "status")
 
 
@@ -45,8 +45,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ("product", "descript")
-    search_fields = ("product", "descript")
+    list_display = ("product", "description")
+    search_fields = ("product", "description")
 
 
 class SupplierAdmin(admin.ModelAdmin):

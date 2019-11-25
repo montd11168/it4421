@@ -1,24 +1,31 @@
-from django.contrib.auth import authenticate
+import random
+import string
+
+from uuid import uuid4
+from django.conf import settings
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.models import Group
+from django.core.mail import send_mail
+from django.core.management.commands import loaddata
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from .models import Token, User
+
+from .models import Token
 from .serializers import (
     LoginSerializer,
-    UserProfileSerializer,
-    UserSerializer,
-    UserRegisterSerializer,
-    UserProfileUpdateSerializer,
     PasswordResetSerializer,
+    UserProfileSerializer,
+    UserProfileUpdateSerializer,
+    UserRegisterSerializer,
+    UserSerializer,
+    VerificationSerializer,
 )
-import random
-import string
-from django.core.mail import send_mail
-from django.conf import settings
-from rest_framework.permissions import IsAuthenticated
-from django.core.management.commands import loaddata
+
+User = get_user_model()
+
 
 def password_reset(length=8):
     random_string = string.ascii_letters + string.digits
@@ -28,24 +35,54 @@ def password_reset(length=8):
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
 
 class RegisterView(APIView):
+    def get(self, request, format=None):
+        serializer = VerificationSerializer(data=request.query_params)
+        if serializer.is_valid():
+            email = serializer.validated_data["email"]
+            verificate_code = serializer.validated_data["verificate_code"]
+            if User.objects.filter(email=email, verificate_code=verificate_code).exists():
+                User.objects.filter(email=email).update(is_active=True)
+                return Response(status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Email or verificate code is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request, format=None):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
-            password = serializer.validated_data["password"]
-            user = User.objects.create(email=email)
-            user.set_password(password)
-            user.groups.add(Group.objects.get(name="user"))
-            user.save()
-            User.objects.filter(pk=user.id).update(**serializer.validated_data)
-            user = User.objects.get(pk=user.id)
-            # serializer = UserSerializer(user)
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_201_CREATED)
+            if not User.objects.filter(email=email).exists():
+                password = serializer.validated_data["password"]
+                user = User.objects.create(**serializer.data)
+                user.set_password(password)
+                user.groups.add(Group.objects.get(name="user"))
+                user.is_active = False
+                user.verificate_code = uuid4()
+                user.save()
+                auth_url = (
+                    settings.BACKEND_HOST
+                    + "/users/register?email={}&verificate_code={}".format(
+                        email, user.verificate_code
+                    )
+                )
+                send_mail(
+                    "IT4421 Confirm.",
+                    auth_url,
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
+                return Response(
+                    {"message": "Please check your email to confirm."},
+                    status=status.HTTP_201_CREATED,
+                )
+            return Response({"message": "Email Exists."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -81,8 +118,13 @@ class LoginView(APIView):
                 )
 
             token = Token.objects.create(user=user)
-
-            return Response({"Token": token.key}, status=status.HTTP_200_OK)
+            response = {
+                "token": token.key,
+                "is_activate": user.is_active,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser,
+            }
+            return Response(response, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -145,12 +145,23 @@ ADMIN_PASSWORD = "admin"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+# EMAIL_HOST = "smtp.fastmail.com"
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = "vannn@fastmail.com"
+# EMAIL_HOST_PASSWORD = "ufuuu7gxc6927zh8"
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True
+
 EMAIL_HOST = "smtp.fastmail.com"
 EMAIL_PORT = 465
-EMAIL_HOST_USER = "vannn@fastmail.com"
-EMAIL_HOST_PASSWORD = "ufuuu7gxc6927zh8"
+EMAIL_HOST_USER = "it4421_test@fastmail.com"
+EMAIL_HOST_PASSWORD = "3q9jcrhqs9hcj2s5"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
-# ufuuu7gxc6927zh8
-# IT4421IT4421
+ADMIN_EMAIL = "admin@gmail.com"
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin"
+
+# url to confirm user when register
+BACKEND_HOST = "http://127.0.0.1:8000"

@@ -20,20 +20,10 @@ class MyUserChangeForm(UserChangeForm):
 class CustomizeUserAdmin(UserAdmin):
     form = MyUserChangeForm
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username", "password", "verificate_code")}),
         (
             _("Personal info"),
-            {
-                "fields": (
-                    "email",
-                    "first_name",
-                    "last_name",
-                    "phone",
-                    "address",
-                    "gender",
-                    "date_of_birth",
-                )
-            },
+            {"fields": ("email", "phone", "address", "gender", "date_of_birth",)},
         ),
         (
             _("Permissions"),
@@ -42,8 +32,9 @@ class CustomizeUserAdmin(UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = ((None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),)
-    list_display = ("email", "username", "first_name", "last_name", "is_staff")
+    list_display = ("email", "username", "is_active", "is_staff", "is_superuser")
     ordering = ("date_joined",)
+    search_fields = ("username", "email")
 
 
 admin.site.register(Token, TokenAdmin)
