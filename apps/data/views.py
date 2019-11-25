@@ -21,6 +21,8 @@ from .serializers import (
     VoteCreateSerializer,
 )
 from django.db.models import Avg
+from rest_framework.permissions import IsAuthenticated
+import json
 
 
 class SupplierViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
@@ -42,8 +44,8 @@ class ProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     def create(self, request):
         serializer = ProductCreateSerializer(data=request.data)
         if serializer.is_valid():
-            supplier_id = serializer.validated_data['supplier_id']
-            name = serializer.validated_data['name']
+            supplier_id = serializer.validated_data["supplier_id"]
+            name = serializer.validated_data["name"]
             product, created = Product.objects.get_or_create(supplier_id=supplier_id, name=name)
             if created:
                 Product.objects.filter(pk=product.id).update(**serializer.validated_data)
@@ -54,9 +56,18 @@ class ProductViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 
 class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Cart.objects.filter(user=self.request.user)
+        return Cart.objects.filter(user=self.request.user, order=None)
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        for cart in queryset:
+            product = Product.objects.get(pk=cart.product.id)
+            cart.detail_products = product
+        serializer = CartSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
         serializer = CartCreateSerializer(data=request.data)
@@ -137,7 +148,9 @@ class VoteViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
             value = serializer.validated_data["value"]
             product = Product.objects.get(pk=product_pk)
             vote = Vote.objects.create(product=product, value=value, user=request.user)
-            product.voting = Vote.objects.filter(product=product).aggregate(Avg('value'))['value__avg']
+            product.voting = Vote.objects.filter(product=product).aggregate(Avg("value"))[
+                "value__avg"
+            ]
             product.save()
             serializer = VoteSerializer(vote)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -53,6 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = "__all__"
 
+
 class ProductCreateSerializer(serializers.Serializer):
     supplier_id = serializers.IntegerField()
     guarantee = serializers.CharField(required=False)
@@ -85,7 +86,7 @@ class SupplierSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    tracks = serializers.StringRelatedField(many=True)
+    detail_products = ProductSerializer(read_only=True)
 
     class Meta:
         model = Cart
@@ -111,4 +112,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.Serializer):
     cart_id = serializers.IntegerField()
-    
+

@@ -46,7 +46,9 @@ class RegisterView(APIView):
             verificate_code = serializer.validated_data["verificate_code"]
             if User.objects.filter(email=email, verificate_code=verificate_code).exists():
                 User.objects.filter(email=email).update(is_active=True)
-                return Response(status=status.HTTP_200_OK)
+                return Response(
+                    {"message": "Your account has been activated."}, status=status.HTTP_200_OK
+                )
             return Response(
                 {"message": "Email or verificate code is incorrect."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -59,9 +61,20 @@ class RegisterView(APIView):
             email = serializer.validated_data["email"]
             if not User.objects.filter(email=email).exists():
                 password = serializer.validated_data["password"]
+                # group = Group.objects.get(name="user")
+                try:
+                    group = Group.objects.get(name="user")
+                except Group.DoesNotExist:
+                    return Response(
+                        {
+                            "message from Văn": "Biết ngay là sẽ gặp lỗi này mà. "
+                            + "Vô http://127.0.0.1:8000/admin/auth/group/add/ thêm group: user đã các bạn nhé!"
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 user = User.objects.create(**serializer.data)
                 user.set_password(password)
-                user.groups.add(Group.objects.get(name="user"))
+                user.groups.add(group)
                 user.is_active = False
                 user.verificate_code = uuid4()
                 user.save()
