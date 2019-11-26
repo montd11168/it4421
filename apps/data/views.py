@@ -59,22 +59,20 @@ class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Cart.objects.filter(user=self.request.user, order=None)
-
-    def list(self, request):
-        queryset = self.get_queryset()
+        queryset = Cart.objects.filter(user=self.request.user, order=None)
         for cart in queryset:
             product = Product.objects.get(pk=cart.product.id)
             cart.detail_products = product
-        serializer = CartSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return queryset
 
     def create(self, request):
         serializer = CartCreateSerializer(data=request.data)
         if serializer.is_valid():
             product_id = serializer.validated_data["product_id"]
             quantity = serializer.validated_data["quantity"]
-            cart, created = Cart.objects.get_or_create(product_id=product_id, user=request.user)
+            cart, created = Cart.objects.get_or_create(
+                product_id=product_id, user=request.user, order=None
+            )
             if created:
                 cart.quantity = quantity
             else:
@@ -89,6 +87,8 @@ class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
             quantity = serializer.validated_data["quantity"]
             Cart.objects.filter(pk=pk).update(quantity=quantity)
             cart = Cart.objects.get(pk=pk)
+            product = Product.objects.get(pk=cart.product.id)
+            cart.detail_products = product
             serializer = CartSerializer(cart)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -111,7 +111,7 @@ class OrderViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
                 order.total += cart.quantity * cart.product.listed_price
                 order.save()
             serializer = OrderSerializer(order)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
@@ -132,7 +132,7 @@ class CommentViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
             product = Product.objects.get(pk=product_pk)
             comment = Comment.objects.create(product=product, content=content, user=request.user)
             serializer = CommentSerializer(comment)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -153,7 +153,7 @@ class VoteViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
             ]
             product.save()
             serializer = VoteSerializer(vote)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
