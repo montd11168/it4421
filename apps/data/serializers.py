@@ -1,16 +1,6 @@
 from rest_framework import serializers
 
-from .models import (
-    Comment,
-    Export,
-    Import,
-    Cart,
-    Order,
-    Product,
-    ProductImage,
-    Supplier,
-    Vote,
-)
+from .models import Cart, Comment, Export, Import, Order, Product, ProductImage, Supplier, Vote
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -20,11 +10,11 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.email")
+    user = serializers.ReadOnlyField(source="user.username")
 
     class Meta:
         model = Comment
-        fields = "__all__"
+        exclude = ["product"]
 
 
 class CommentCreateSerializer(serializers.Serializer):
@@ -32,11 +22,11 @@ class CommentCreateSerializer(serializers.Serializer):
 
 
 class VoteSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.email")
+    user = serializers.ReadOnlyField(source="user.username")
 
     class Meta:
         model = Vote
-        fields = "__all__"
+        exclude = ["product"]
 
 
 class VoteCreateSerializer(serializers.Serializer):
@@ -86,11 +76,11 @@ class SupplierSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    detail_products = ProductSerializer(read_only=True)
+    product = ProductSerializer()
 
     class Meta:
         model = Cart
-        exclude = ("user",)
+        exclude = ["user", "order"]
 
 
 class CartCreateSerializer(serializers.Serializer):
@@ -107,9 +97,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = "__all__"
+        exclude = ["user"]
 
 
 class OrderCreateSerializer(serializers.Serializer):
     cart_id = serializers.IntegerField()
-

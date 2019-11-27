@@ -1,6 +1,6 @@
 import random
 import string
-
+from datetime import datetime
 from uuid import uuid4
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
@@ -129,7 +129,8 @@ class LoginView(APIView):
                     {"detail": "Invalid Credentials or activate account"},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
-
+            user.last_login = datetime.now()
+            user.save()
             token = Token.objects.create(user=user)
             response = {
                 "token": token.key,

@@ -1,28 +1,28 @@
+import json
+
+from django.db.models import Avg
+from django.shortcuts import get_object_or_404, render
 from drf_roles.mixins import RoleViewSetMixin
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from django.shortcuts import render
-from .models import Comment, Cart, Order, Product, ProductImage, Supplier, Vote
+
+from .models import Cart, Comment, Order, Product, ProductImage, Supplier, Vote
 from .serializers import (
-    CommentSerializer,
-    CommentCreateSerializer,
-    CartSerializer,
     CartCreateSerializer,
+    CartSerializer,
     CartUpdateSerializer,
-    OrderSerializer,
+    CommentCreateSerializer,
+    CommentSerializer,
     OrderCreateSerializer,
+    OrderSerializer,
+    ProductCreateSerializer,
     ProductImageSerializer,
     ProductSerializer,
-    ProductCreateSerializer,
     SupplierSerializer,
-    VoteSerializer,
     VoteCreateSerializer,
+    VoteSerializer,
 )
-from django.db.models import Avg
-from rest_framework.permissions import IsAuthenticated
-import json
 
 
 class SupplierViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
@@ -60,9 +60,6 @@ class CartViewSet(RoleViewSetMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Cart.objects.filter(user=self.request.user, order=None)
-        for cart in queryset:
-            product = Product.objects.get(pk=cart.product.id)
-            cart.detail_products = product
         return queryset
 
     def create(self, request):
